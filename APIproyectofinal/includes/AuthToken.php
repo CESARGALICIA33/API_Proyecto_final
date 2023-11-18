@@ -34,13 +34,18 @@ class AuthToken
         try {
             $decoded = JWT::decode($token, self::$secretKey, (object)['algorithm' => 'HS256']);
 
+            // Verificar si el token ha expirado
+            if (isset($decoded->exp) && $decoded->exp < time()) {
+                return null; // Token expirado
+            }
 
-            // Aquí puedes realizar más verificaciones según tus necesidades
+            // Agrega más verificaciones según sea necesario...
 
             return $decoded->data;
         } catch (Exception $e) {
             return null; // El token no es válido
         }
     }
+
 }
 ?>
