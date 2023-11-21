@@ -71,6 +71,43 @@
             }
         }
 
+        public static function Visualizar()
+        {
+            $conexion = new Conexion();
+        
+            try {
+                $query = "SELECT *
+                    FROM candidato";
+                $statement = $conexion->prepare($query);
+                $statement->execute();
+        
+                $candidatos = $statement->fetchAll(PDO::FETCH_ASSOC);
+        
+                header('Content-Type: application/json');
+        
+                if ($candidatos) {
+                    // Candidatos encontrados, devuelve la lista completa
+                    header('HTTP/1.1 200 OK');
+                    foreach ($candidatos as &$candidato) {
+                        unset($candidato['CurriculumVitae']);
+                        unset($candidato['Constancia']);
+                        
+                    }
+                    echo json_encode($candidatos);
+                } else {
+                    // No se encontraron candidatos, proporciona un mensaje de error
+                    header('HTTP/1.1 404 Not Found');
+                    echo json_encode(array('error' => 'No se encontraron candidatos'));
+                }
+        
+            } catch (PDOException $e) {
+                // Manejar errores de la base de datos
+                header('HTTP/1.1 500 Internal Server Error');
+                echo json_encode(array('error' => 'Error en la base de datos: ' . $e->getMessage()));
+            }
+        }
+        
+
         public static function VisualizarCandidato($nombre)
         {
             $conexion = new Conexion();
@@ -142,6 +179,229 @@
                 echo json_encode(array('error' => 'Error en la base de datos: ' . $e->getMessage()));
             }
         }
+
+        public static function VisualizarGeneroM()
+        {
+            $conexion = new Conexion();
+        
+            try {
+                $query = "SELECT *
+                    FROM candidato
+                    WHERE Género = 'M'";
+                $statement = $conexion->prepare($query);
+                $statement->execute();
+        
+                $candidatos = $statement->fetchAll(PDO::FETCH_ASSOC);
+        
+                header('Content-Type: application/json');
+        
+                if ($candidatos) {
+                    // Candidatos encontrados, devuelve la lista completa
+                    header('HTTP/1.1 200 OK');
+                    foreach ($candidatos as &$candidato) {
+                        unset($candidato['CurriculumVitae']);
+                        unset($candidato['Constancia']);
+                        
+                    }
+                    echo json_encode($candidatos);
+                } else {
+                    // No se encontraron candidatos, proporciona un mensaje de error
+                    header('HTTP/1.1 404 Not Found');
+                    echo json_encode(array('error' => 'No se encontraron candidatos'));
+                }
+        
+            } catch (PDOException $e) {
+                // Manejar errores de la base de datos
+                header('HTTP/1.1 500 Internal Server Error');
+                echo json_encode(array('error' => 'Error en la base de datos: ' . $e->getMessage()));
+            }
+        }
+
+        public static function VisualizarGeneroF()
+        {
+            $conexion = new Conexion();
+        
+            try {
+                $query = "SELECT *
+                    FROM candidato
+                    WHERE Género = 'F'";
+                $statement = $conexion->prepare($query);
+                $statement->execute();
+        
+                $candidatos = $statement->fetchAll(PDO::FETCH_ASSOC);
+        
+                header('Content-Type: application/json');
+        
+                if ($candidatos) {
+                    // Candidatos encontrados, devuelve la lista completa
+                    header('HTTP/1.1 200 OK');
+                    foreach ($candidatos as &$candidato) {
+                        unset($candidato['CurriculumVitae']);
+                        unset($candidato['Constancia']);
+                        
+                    }
+                    echo json_encode($candidatos);
+                } else {
+                    // No se encontraron candidatos, proporciona un mensaje de error
+                    header('HTTP/1.1 404 Not Found');
+                    echo json_encode(array('error' => 'No se encontraron candidatos'));
+                }
+        
+            } catch (PDOException $e) {
+                // Manejar errores de la base de datos
+                header('HTTP/1.1 500 Internal Server Error');
+                echo json_encode(array('error' => 'Error en la base de datos: ' . $e->getMessage()));
+            }
+        }
+
+        public static function VisualizarDisponibilidadC()
+        {
+            $conexion = new Conexion();
+        
+            try {
+                $query = "SELECT *
+                    FROM candidato
+                    WHERE Disponibilidad = 'T'";
+                $statement = $conexion->prepare($query);
+                $statement->execute();
+        
+                $candidatos = $statement->fetchAll(PDO::FETCH_ASSOC);
+        
+                header('Content-Type: application/json');
+        
+                if ($candidatos) {
+                    // Candidatos encontrados, devuelve la lista completa
+                    header('HTTP/1.1 200 OK');
+                    foreach ($candidatos as &$candidato) {
+                        unset($candidato['CurriculumVitae']);
+                        unset($candidato['Constancia']);
+                        
+                    }
+                    echo json_encode($candidatos);
+                } else {
+                    // No se encontraron candidatos, proporciona un mensaje de error
+                    header('HTTP/1.1 404 Not Found');
+                    echo json_encode(array('error' => 'No se encontraron candidatos'));
+                }
+        
+            } catch (PDOException $e) {
+                // Manejar errores de la base de datos
+                header('HTTP/1.1 500 Internal Server Error');
+                echo json_encode(array('error' => 'Error en la base de datos: ' . $e->getMessage()));
+            }
+        }
+
+        public static function VisualizarDisponibilidadM()
+        {
+            $conexion = new Conexion();
+        
+            try {
+                $query = "SELECT *
+                    FROM candidato
+                    WHERE Disponibilidad = 'M'";
+                $statement = $conexion->prepare($query);
+                $statement->execute();
+        
+                $candidatos = $statement->fetchAll(PDO::FETCH_ASSOC);
+        
+                header('Content-Type: application/json');
+        
+                if ($candidatos) {
+                    // Candidatos encontrados, devuelve la lista completa
+                    header('HTTP/1.1 200 OK');
+                    foreach ($candidatos as &$candidato) {
+                        unset($candidato['CurriculumVitae']);
+                        unset($candidato['Constancia']);
+                        
+                    }
+                    echo json_encode($candidatos);
+                } else {
+                    // No se encontraron candidatos, proporciona un mensaje de error
+                    header('HTTP/1.1 404 Not Found');
+                    echo json_encode(array('error' => 'No se encontraron candidatos'));
+                }
+        
+            } catch (PDOException $e) {
+                // Manejar errores de la base de datos
+                header('HTTP/1.1 500 Internal Server Error');
+                echo json_encode(array('error' => 'Error en la base de datos: ' . $e->getMessage()));
+            }
+        }
+
+        public static function VisualizarSalarioMenor()
+        {
+            $conexion = new Conexion();
+        
+            try {
+                $query = "SELECT *
+                    FROM candidato
+                    WHERE Salario < 10000";
+                $statement = $conexion->prepare($query);
+                $statement->execute();
+        
+                $candidatos = $statement->fetchAll(PDO::FETCH_ASSOC);
+        
+                header('Content-Type: application/json');
+        
+                if ($candidatos) {
+                    // Candidatos encontrados, devuelve la lista completa
+                    header('HTTP/1.1 200 OK');
+                    foreach ($candidatos as &$candidato) {
+                        unset($candidato['CurriculumVitae']);
+                        unset($candidato['Constancia']);
+                        
+                    }
+                    echo json_encode($candidatos);
+                } else {
+                    // No se encontraron candidatos, proporciona un mensaje de error
+                    header('HTTP/1.1 404 Not Found');
+                    echo json_encode(array('error' => 'No se encontraron candidatos'));
+                }
+        
+            } catch (PDOException $e) {
+                // Manejar errores de la base de datos
+                header('HTTP/1.1 500 Internal Server Error');
+                echo json_encode(array('error' => 'Error en la base de datos: ' . $e->getMessage()));
+            }
+        }
+
+        public static function VisualizarSalarioMayor()
+        {
+            $conexion = new Conexion();
+        
+            try {
+                $query = "SELECT *
+                    FROM candidato
+                    WHERE Salario > 10000";
+                $statement = $conexion->prepare($query);
+                $statement->execute();
+        
+                $candidatos = $statement->fetchAll(PDO::FETCH_ASSOC);
+        
+                header('Content-Type: application/json');
+        
+                if ($candidatos) {
+                    // Candidatos encontrados, devuelve la lista completa
+                    header('HTTP/1.1 200 OK');
+                    foreach ($candidatos as &$candidato) {
+                        unset($candidato['CurriculumVitae']);
+                        unset($candidato['Constancia']);
+                        
+                    }
+                    echo json_encode($candidatos);
+                } else {
+                    // No se encontraron candidatos, proporciona un mensaje de error
+                    header('HTTP/1.1 404 Not Found');
+                    echo json_encode(array('error' => 'No se encontraron candidatos'));
+                }
+        
+            } catch (PDOException $e) {
+                // Manejar errores de la base de datos
+                header('HTTP/1.1 500 Internal Server Error');
+                echo json_encode(array('error' => 'Error en la base de datos: ' . $e->getMessage()));
+            }
+        }
+        
         
         
         //POST
@@ -403,7 +663,7 @@
         }
             
         }
-       //prueba
+       //prueba no eliminar, totalmente funcional
        public static function ActualizarCandidatoSin($nombre, $apellido_materno, $apellido_paterno, $genero, $telefono, $calle, $colonia, $num_int, $num_ext, $codigoPostal, $experiencia, $educacion, $habilidades, $fecha_nacimiento, $disponibilidad, $salario, $Iduser)
        {
            $conexion = new Conexion();
