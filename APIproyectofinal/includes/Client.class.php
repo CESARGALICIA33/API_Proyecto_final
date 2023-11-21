@@ -23,6 +23,8 @@
                 if ($candidato) {
                     // Candidato encontrado, devuelve información relevante
                     header('HTTP/1.1 201 Empresa creado correctamente');
+                    unset($candidato['CurriculumVitae']);
+                    unset($candidato['Constancia']);
                     echo json_encode($candidato);
                 } else {
                     // Candidato no encontrado, proporciona un mensaje de error
@@ -35,7 +37,8 @@
                 header('HTTP/1.1 500 Internal Server Error');
                 echo json_encode(array('error' => 'Error en la base de datos: ' . $e->getMessage()));
             }
-        }
+        }       
+
 
         public static function ObtenerCorreoPorId($Iduser)
         {
@@ -68,7 +71,77 @@
             }
         }
 
-        
+        public static function VisualizarCandidato($nombre)
+        {
+            $conexion = new Conexion();
+
+            try {
+                $query = "SELECT *
+                FROM candidato
+                WHERE Nombre = LOWER(:nombre);
+                ";
+                $statement = $conexion->prepare($query);
+                $statement->bindParam(':nombre', $nombre);
+                $statement->execute();
+
+                $candidato = $statement->fetch(PDO::FETCH_ASSOC);
+
+                header('Content-Type: application/json');
+
+                if ($candidato) {
+                    // Candidato encontrado, devuelve información relevante
+                    header('HTTP/1.1 201');
+                    unset($candidato['CurriculumVitae']);
+                    unset($candidato['Constancia']);
+                    echo json_encode($candidato);
+                } else {
+                    // Candidato no encontrado, proporciona un mensaje de error
+                    header('HTTP/1.1 404 Not Found');
+                    echo json_encode(array('error' => 'Candidato no encontrado'));
+                }
+
+            } catch (PDOException $e) {
+                // Manejar errores de la base de datos
+                header('HTTP/1.1 500 Internal Server Error');
+                echo json_encode(array('error' => 'Error en la base de datos: ' . $e->getMessage()));
+            }
+        }
+
+        public static function VisualizarCandidatoGenero($genero)
+        {
+            $conexion = new Conexion();
+
+            try {
+                $query = "SELECT *
+                FROM candidato
+                WHERE Nombre = LOWER(:genero);
+                ";
+                $statement = $conexion->prepare($query);
+                $statement->bindParam(':genero', $genero);
+                $statement->execute();
+
+                $candidato = $statement->fetch(PDO::FETCH_ASSOC);
+
+                header('Content-Type: application/json');
+
+                if ($candidato) {
+                    // Candidato encontrado, devuelve información relevante
+                    header('HTTP/1.1 201');
+                    unset($candidato['CurriculumVitae']);
+                    unset($candidato['Constancia']);
+                    echo json_encode($candidato);
+                } else {
+                    // Candidato no encontrado, proporciona un mensaje de error
+                    header('HTTP/1.1 404 Not Found');
+                    echo json_encode(array('error' => 'Candidato no encontrado'));
+                }
+
+            } catch (PDOException $e) {
+                // Manejar errores de la base de datos
+                header('HTTP/1.1 500 Internal Server Error');
+                echo json_encode(array('error' => 'Error en la base de datos: ' . $e->getMessage()));
+            }
+        }
         
         
         //POST
@@ -97,28 +170,6 @@
         
         }
 
-        /*public static function insertarUsuario($correo, $contrasena)
-        {
-            $conexion = new Conexion();
-
-            
-                $query = "INSERT INTO usuario (Correo, Contraseña) VALUES (:correo, :contrasena)";
-                $statement = $conexion->prepare($query);
-                $statement->bindParam(':correo', $correo);
-                $statement->bindParam(':contrasena', $contrasena);
-                $statement->execute();
-        
-                if ($statement->rowCount() > 0) {
-                    $success = true;
-                    header('HTTP/1.1 201 Usuario creado correctamente');
-                    echo json_encode($success);
-                } else {
-                    $success = false;
-                    header('HTTP/1.1 404 Usuario no creado correctamente');
-                    echo json_encode($success);
-                }
-            
-        }*/
 
         public static function insertarUsuario($correo, $contrasena)
         {
@@ -174,38 +225,7 @@
                 }
             
         }
-            //eliminar clase ya se realiza en otra funcion
-        /*public static function validarCredenciales($correo, $contrasena, $accountType)
-        {
-            $conexion = new Conexion();
-
-            try {
-                if ($accountType == 2) {
-                    $query = "SELECT * FROM empresa WHERE Nombre = :correo AND Contraseña = :contrasena";
-                } else if ($accountType == 1) {
-                    $query = "SELECT * FROM usuario WHERE Correo = :correo AND Contraseña = :contrasena";
-                }
-
-                $statement = $conexion->prepare($query);
-                $statement->bindParam(':correo', $correo);
-                $statement->bindParam(':contrasena', $contrasena);
-                $statement->execute();
-
-                if ($statement->rowCount() > 0) {
-                    $success = true;
-                    header('HTTP/1.1 200 OK');
-                    echo json_encode($success);
-                } else {
-                    $success = false;
-                    header('HTTP/1.1 404 No autorizado desde api');
-                    echo json_encode($success);
-                }
-            } catch (PDOException $e) {
-                header('HTTP/1.1 500 Internal Server Error');
-                echo json_encode(array('error' => 'Error en la base de datos: ' . $e->getMessage()));
-            }
-        }*/
-
+ 
 
         public static function InsertarCandidato($nombre, $apellido_materno, $apellido_paterno, $genero, $telefono, $calle, $colonia, $num_int, $num_ext, $codigoPostal, $experiencia, $educacion, $habilidades, $fecha_nacimiento, $curriculumContent, $constanciaContent, $disponibilidad, $salario, $idusuario)
         {
@@ -271,51 +291,49 @@
          
         
         }
+
+        
         
         //metodo DELETE
-        public static function EliminarCandidato($Iduser)
+        public static function EliminarUsuarioYCorreos($Iduser)
         {
             $conexion = new Conexion();
-
-           
-                $query = "DELETE FROM candidato WHERE IdCandidato = :Iduser";
-                $statement = $conexion->prepare($query);
-                $statement->bindParam(':Iduser', $Iduser);
-                $statement->execute();
-
-                if ($statement->rowCount() > 0) {
+            $conexion->beginTransaction();
+        
+            try {
+                // Eliminar candidato
+                $queryCandidato = "DELETE FROM candidato WHERE IdUsuario  = :Iduser";
+                $statementCandidato = $conexion->prepare($queryCandidato);
+                $statementCandidato->bindParam(':Iduser', $Iduser);
+                $statementCandidato->execute();
+        
+                // Eliminar usuario
+                $queryUsuario = "DELETE FROM usuario WHERE ID = :Iduser";
+                $statementUsuario = $conexion->prepare($queryUsuario);
+                $statementUsuario->bindParam(':Iduser', $Iduser);
+                $statementUsuario->execute();
+        
+                // Confirmar la transacción
+                $conexion->commit();
+        
+                // Verificar si alguna de las eliminaciones tuvo éxito
+                if ($statementCandidato->rowCount() > 0 || $statementUsuario->rowCount() > 0) {
                     $success = true;
-                    header('HTTP/1.1 200 Candidato Eliminado');
+                    header('HTTP/1.1 200 Registros Eliminados');
                     echo json_encode($success);
                 } else {
                     $success = false;
-                    header('HTTP/1.1 404 Error en la elminacion');
+                    header('HTTP/1.1 404 No se encontraron registros para eliminar');
                     echo json_encode($success);
                 }
-           
+            } catch (PDOException $e) {
+                // Si hay algún error, deshacer la transacción y manejar el error
+                $conexion->rollBack();
+                header('HTTP/1.1 500 Internal Server Error');
+                echo json_encode(['error' => 'Error en la base de datos: ' . $e->getMessage()]);
+            }
         }
-
-        public static function EliminarCorreo($Iduser)
-        {
-            $conexion = new Conexion();
-
-           
-                $query = "DELETE FROM usuario WHERE ID = :Iduser";
-                $statement = $conexion->prepare($query);
-                $statement->bindParam(':Iduser', $Iduser);
-                $statement->execute();
-
-                if ($statement->rowCount() > 0) {
-                    $success = true;
-                    header('HTTP/1.1 200 Correo Eliminado');
-                    echo json_encode($success);
-                } else {
-                    $success = false;
-                    header('HTTP/1.1 404 Error en la elminacion');
-                    echo json_encode($success);
-                }
-           
-        }
+        
 
         //PUT
         public static function ActualizarCandidato($nombre, $apellido_materno, $apellido_paterno, $genero, $telefono, $calle, $colonia, $num_int, $num_ext, $codigoPostal, $experiencia, $educacion, $habilidades, $fecha_nacimiento, $curriculumContent, $constanciaContent, $disponibilidad, $salario, $Iduser)
@@ -339,10 +357,10 @@
                 Habilidades = :habilidades,
                 FechaNacimiento = :fecha_nacimiento,
                 CurriculumVitae = :curriculum,
-                Constancia = :contancia,
+                Constancia = :constancia,
                 Disponibilidad = :disponibilidad,
                 Salario = :salario
-            WHERE IdCandidato = :Iduser;
+            WHERE IdUsuario = :Iduser;
             ";
         
             $statement = $conexion->prepare($query);
@@ -361,7 +379,7 @@
             $statement->bindParam(':habilidades', $habilidades);
             $statement->bindParam(':fecha_nacimiento', $fecha_nacimiento);
             $statement->bindParam(':curriculum', $curriculumContent, PDO::PARAM_LOB);
-            $statement->bindParam(':contancia', $constanciaContent, PDO::PARAM_LOB);
+            $statement->bindParam(':constancia', $constanciaContent, PDO::PARAM_LOB);
             $statement->bindParam(':disponibilidad', $disponibilidad);
             $statement->bindParam(':salario', $salario);
             $statement->bindParam(':Iduser', $Iduser);
@@ -385,6 +403,73 @@
         }
             
         }
+       //prueba
+       public static function ActualizarCandidatoSin($nombre, $apellido_materno, $apellido_paterno, $genero, $telefono, $calle, $colonia, $num_int, $num_ext, $codigoPostal, $experiencia, $educacion, $habilidades, $fecha_nacimiento, $disponibilidad, $salario, $Iduser)
+       {
+           $conexion = new Conexion();
+       
+           try {
+               $query = "UPDATE candidato
+                   SET Nombre = :nombre,
+                       ApellidoPaterno = :apellido_paterno,
+                       ApellidoMaterno = :apellido_materno,
+                       Género = :genero,
+                       Teléfono = :telefono,
+                       Calle = :calle,
+                       Colonia = :colonia,
+                       NumInt = :num_int,
+                       NumExt = :num_ext,
+                       CódigoPostal = :codigoPostal,
+                       ExperienciaLaboral = :experiencia,
+                       Educación = :educacion,
+                       Habilidades = :habilidades,
+                       FechaNacimiento = :fecha_nacimiento,
+                       Disponibilidad = :disponibilidad,
+                       Salario = :salario
+                   WHERE IdUsuario = :Iduser;
+               ";
+       
+               $statement = $conexion->prepare($query);
+               $statement->bindParam(':nombre', $nombre);
+               $statement->bindParam(':apellido_paterno', $apellido_paterno);
+               $statement->bindParam(':apellido_materno', $apellido_materno);
+               $statement->bindParam(':genero', $genero);
+               $statement->bindParam(':telefono', $telefono);
+               $statement->bindParam(':calle', $calle);
+               $statement->bindParam(':colonia', $colonia);
+               $statement->bindParam(':num_int', $num_int);
+               $statement->bindParam(':num_ext', $num_ext);
+               $statement->bindParam(':codigoPostal', $codigoPostal);
+               $statement->bindParam(':experiencia', $experiencia);
+               $statement->bindParam(':educacion', $educacion);
+               $statement->bindParam(':habilidades', $habilidades);
+               $statement->bindParam(':fecha_nacimiento', $fecha_nacimiento);
+               $statement->bindParam(':disponibilidad', $disponibilidad);
+               $statement->bindParam(':salario', $salario);
+               $statement->bindParam(':Iduser', $Iduser);
+       
+               $statement->execute();
+       
+               $response = array();
+
+               if ($statement->rowCount() > 0) {
+                   $response['success'] = true;
+                   $response['message'] = 'Candidato actualizado correctamente';
+               } else {
+                   $response['success'] = false;
+                   $response['message'] = 'Candidato no actualizado correctamente';
+               }
+       
+               echo json_encode($response);
+       
+           } catch (PDOException $e) {
+               // Manejar errores de la base de datos
+               header('HTTP/1.1 500 Internal Server Error');
+               echo json_encode(['error' => 'Error en la base de datos: ' . $e->getMessage()]);
+           }
+       }
+
+
 
         public static function ActualizarUsuario($correo, $contrasena, $Iduser)
         {
@@ -411,7 +496,7 @@
                 } else {
                     // Error al crear el usuario
                     $success = false;
-                    header('HTTP/1.1 404 Usuario no creado correctamente');
+                    header('HTTP/1.1 404 Usuario ya creado ');
                     echo json_encode(['success' => $success]);
                 }
             } catch (PDOException $e) {

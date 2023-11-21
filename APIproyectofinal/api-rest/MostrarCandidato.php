@@ -7,9 +7,5 @@
         Client::ObtenerCandidatoPorId($_GET['Iduser']);
 
     }
-    
-
-
-
 
 ?>
