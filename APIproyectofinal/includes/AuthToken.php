@@ -6,7 +6,7 @@ use Firebase\JWT\JWT;
 
 class AuthToken
 {
-    private static $secretKey = 'tu_clave_secreta'; // Cambia esto a una clave segura y secreta
+    private static $secretKey = 'tu_clave_secreta'; // Clave de seguridad del token
 
     public static function generateToken($userId, $accountType)
     {
@@ -21,7 +21,7 @@ class AuthToken
             'nbf'  => $notBefore,        // Token no válido antes de esto
             'exp'  => $expire,           // Tiempo de expiración del token
             'data' => [
-                'userId'   => $userId,   // Puedes incluir más información del usuario
+                'userId'   => $userId,   //se porporcionan datos del id y tipo de cuenta dentro del cuerpo del token
                 'accountType' => $accountType,
             ],
         ];
@@ -29,7 +29,7 @@ class AuthToken
         return JWT::encode($data, self::$secretKey, 'HS256');
     }
 
-    public static function validateToken($token)
+    public static function validateToken($token)// funcion que valida el token si se encuentra valido 
     {
         try {
             $decoded = JWT::decode($token, self::$secretKey, (object)['algorithm' => 'HS256']);
@@ -39,9 +39,8 @@ class AuthToken
                 return json_encode(['success' => false, 'message' => 'Token expirado']);
             }
     
-            // Agrega más verificaciones según sea necesario...
     
-            return json_encode(['success' => true, 'data' => $decoded->data]);
+            return json_encode(['success' => true, 'data' => $decoded->data]);// retorna el token devuelta
     
         } catch (Exception $e) {
             // Otros errores

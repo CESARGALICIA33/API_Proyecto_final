@@ -1,7 +1,7 @@
 <?php
 
-require_once ('../includes/AuthToken.php');
-require_once ('../includes/Database.class.php');
+require_once ('../includes/AuthToken.php');//conexion a la clase donde se genera el token
+require_once ('../includes/Database.class.php');// conexion de base de datos
 
 // Obtener datos del cuerpo de la solicitud
 $data = json_decode(file_get_contents("php://input"));
@@ -42,7 +42,7 @@ function getUserFromDatabase($correo, $contrasena, $accountType) {
     $conexion = new Conexion();
 
     try {
-        $query = ($accountType == 2)
+        $query = ($accountType == 2)// dependiendo del tipo de cuenta se ejecuta una o otra consulta para verificar que si esten creados o registrados los correos
             ? "SELECT * FROM empresa WHERE Nombre = :correo AND Contraseña = :contrasena"
             : "SELECT * FROM usuario WHERE Correo = :correo AND Contraseña = :contrasena";
 

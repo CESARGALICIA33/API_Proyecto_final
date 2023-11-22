@@ -3,7 +3,7 @@
  class Conexion extends PDO{
 
     private $host = 'localhost';
-    private $nombre = 'apiprueba';
+    private $nombre = 'desempleo';
     private $usuario = 'root';
     private $password = '';
     public function __construct(){

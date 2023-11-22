@@ -1,5 +1,5 @@
 <?php
-
+// api que recibe los datos del candidato para despues mandarlos a la funcion de actualizar candidatos(update)
 require_once('../includes/Client.class.php');
 
 // Verificar que la solicitud sea del tipo PUT

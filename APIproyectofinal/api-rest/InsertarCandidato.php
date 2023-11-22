@@ -1,13 +1,13 @@
 <?php
-
-    require_once('../includes/Client.class.php');
+//api numero 2 apartado de registro.html
+    require_once('../includes/Client.class.php');// referencia al archivo donde se encuentran las clases
 
     if ($_SERVER['REQUEST_METHOD'] == 'POST' &&
         isset($_POST['nombre'], $_POST['apellido_materno'], $_POST['apellido_paterno'], $_POST['genero'],
             $_POST['telefono'], $_POST['calle'], $_POST['colonia'], $_POST['num_int'],
             $_POST['num_ext'], $_POST['codigoPostal'], $_POST['experiencia'], $_POST['educacion'],
             $_POST['habilidades'], $_POST['fecha_nacimiento'], $_FILES['curriculum'], $_FILES['constancia'],
-            $_POST['disponibilidad'], $_POST['salario'], $_POST['idusuario'])) {
+            $_POST['disponibilidad'], $_POST['salario'], $_POST['idusuario'])) {//validacion del metodo recibido por el cliemte y extraccion con el metodo isset de los datos
 
         // Obtener los valores de $_POST y $_FILES
         $nombre = $_POST['nombre'];
@@ -36,7 +36,7 @@
             $nombre, $apellido_materno, $apellido_paterno, $genero, $telefono, $calle, $colonia, $num_int,
             $num_ext, $codigoPostal, $experiencia, $educacion, $habilidades, $fecha_nacimiento,
             $curriculumContent, $constanciaContent, $disponibilidad, $salario, $idusuario
-        );
+        );//mandar los datos a la clase CLient que es donde se encuentran los metodos
     }
 
 

@@ -144,41 +144,7 @@
             }
         }
 
-        public static function VisualizarCandidatoGenero($genero)
-        {
-            $conexion = new Conexion();
 
-            try {
-                $query = "SELECT *
-                FROM candidato
-                WHERE Nombre = LOWER(:genero);
-                ";
-                $statement = $conexion->prepare($query);
-                $statement->bindParam(':genero', $genero);
-                $statement->execute();
-
-                $candidato = $statement->fetch(PDO::FETCH_ASSOC);
-
-                header('Content-Type: application/json');
-
-                if ($candidato) {
-                    // Candidato encontrado, devuelve información relevante
-                    header('HTTP/1.1 201');
-                    unset($candidato['CurriculumVitae']);
-                    unset($candidato['Constancia']);
-                    echo json_encode($candidato);
-                } else {
-                    // Candidato no encontrado, proporciona un mensaje de error
-                    header('HTTP/1.1 404 Not Found');
-                    echo json_encode(array('error' => 'Candidato no encontrado'));
-                }
-
-            } catch (PDOException $e) {
-                // Manejar errores de la base de datos
-                header('HTTP/1.1 500 Internal Server Error');
-                echo json_encode(array('error' => 'Error en la base de datos: ' . $e->getMessage()));
-            }
-        }
 
         public static function VisualizarGeneroM()
         {
@@ -430,7 +396,7 @@
         
         }
 
-
+        //No.2 Metodo que inserta los datos del correo del usuario en el apartado de registro.html
         public static function insertarUsuario($correo, $contrasena)
         {
             $conexion = new Conexion();
@@ -486,11 +452,11 @@
             
         }
  
-
+        // No.1 Metodo que inserta los datos del registro a la tabla candidatos
         public static function InsertarCandidato($nombre, $apellido_materno, $apellido_paterno, $genero, $telefono, $calle, $colonia, $num_int, $num_ext, $codigoPostal, $experiencia, $educacion, $habilidades, $fecha_nacimiento, $curriculumContent, $constanciaContent, $disponibilidad, $salario, $idusuario)
         {
             $conexion = new Conexion();
-        
+            //prepara la consulta para su insersion
             $query = "INSERT INTO candidato (Nombre, ApellidoPaterno, ApellidoMaterno, Género, Teléfono, Calle, Colonia, NumInt, NumExt, CódigoPostal, ExperienciaLaboral, Educación, Habilidades, FechaNacimiento, CurriculumVitae, Constancia, Disponibilidad, Salario, IdUsuario) VALUES (:nombre, :apellido_materno, :apellido_paterno, :genero, :telefono, :calle, :colonia, :num_int, :num_ext, :codigoPostal, :experiencia, :educacion, :habilidades, :fecha_nacimiento, :curriculum, :contancia, :disponibilidad, :salario, :idusuario)";
         
             $statement = $conexion->prepare($query);
@@ -554,7 +520,10 @@
 
         
         
-        //metodo DELETE
+        //metodos DELETE
+
+
+        //Metodo que realiza la eliminacion de datos en ambas tablas (Candidato y Usuario)
         public static function EliminarUsuarioYCorreos($Iduser)
         {
             $conexion = new Conexion();
@@ -595,75 +564,9 @@
         }
         
 
-        //PUT
-        public static function ActualizarCandidato($nombre, $apellido_materno, $apellido_paterno, $genero, $telefono, $calle, $colonia, $num_int, $num_ext, $codigoPostal, $experiencia, $educacion, $habilidades, $fecha_nacimiento, $curriculumContent, $constanciaContent, $disponibilidad, $salario, $Iduser)
-        {
-            $conexion = new Conexion();
+        //Metodos PUT
         
-            try {
-            $query = "UPDATE candidato
-            SET Nombre = :nombre,
-                ApellidoPaterno = :apellido_paterno,
-                ApellidoMaterno = :apellido_materno,
-                Género = :genero,
-                Teléfono = :telefono,
-                Calle = :calle,
-                Colonia = :colonia,
-                NumInt = :num_int,
-                NumExt = :num_ext,
-                CódigoPostal = :codigoPostal,
-                ExperienciaLaboral = :experiencia,
-                Educación = :educacion,
-                Habilidades = :habilidades,
-                FechaNacimiento = :fecha_nacimiento,
-                CurriculumVitae = :curriculum,
-                Constancia = :constancia,
-                Disponibilidad = :disponibilidad,
-                Salario = :salario
-            WHERE IdUsuario = :Iduser;
-            ";
-        
-            $statement = $conexion->prepare($query);
-            $statement->bindParam(':nombre', $nombre);
-            $statement->bindParam(':apellido_paterno', $apellido_paterno);
-            $statement->bindParam(':apellido_materno', $apellido_materno);
-            $statement->bindParam(':genero', $genero);
-            $statement->bindParam(':telefono', $telefono);
-            $statement->bindParam(':calle', $calle);
-            $statement->bindParam(':colonia', $colonia);
-            $statement->bindParam(':num_int', $num_int);
-            $statement->bindParam(':num_ext', $num_ext);
-            $statement->bindParam(':codigoPostal', $codigoPostal);
-            $statement->bindParam(':experiencia', $experiencia);
-            $statement->bindParam(':educacion', $educacion);
-            $statement->bindParam(':habilidades', $habilidades);
-            $statement->bindParam(':fecha_nacimiento', $fecha_nacimiento);
-            $statement->bindParam(':curriculum', $curriculumContent, PDO::PARAM_LOB);
-            $statement->bindParam(':constancia', $constanciaContent, PDO::PARAM_LOB);
-            $statement->bindParam(':disponibilidad', $disponibilidad);
-            $statement->bindParam(':salario', $salario);
-            $statement->bindParam(':Iduser', $Iduser);
-        
-            $statement->execute();
-        
-            if ($statement->rowCount() > 0) {
-                $success = true;
-                header('HTTP/1.1 201 Candidato actualizado correctamente');
-                echo json_encode($success);
-            } else {
-                $success = false;
-                header('HTTP/1.1 404 Candidato no actualizado correctamente');
-                echo json_encode($success);
-            }
-
-        } catch (PDOException $e) {
-            // Manejar errores de la base de datos
-            header('HTTP/1.1 500 Internal Server Error');
-            echo json_encode(['error' => 'Error en la base de datos: ' . $e->getMessage()]);
-        }
-            
-        }
-       //prueba no eliminar, totalmente funcional
+       //totalmente funcional
        public static function ActualizarCandidatoSin($nombre, $apellido_materno, $apellido_paterno, $genero, $telefono, $calle, $colonia, $num_int, $num_ext, $codigoPostal, $experiencia, $educacion, $habilidades, $fecha_nacimiento, $disponibilidad, $salario, $Iduser)
        {
            $conexion = new Conexion();
